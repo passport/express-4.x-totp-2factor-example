@@ -12,6 +12,11 @@ module.exports = function() {
     )");
   });
 
+  db.run("CREATE TABLE IF NOT EXISTS otp_credentials ( \
+    secret BLOB, \
+    user_id INTEGER NOT NULL \
+  )");
+
   //db.close();
 
 };
