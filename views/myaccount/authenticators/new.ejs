@@ -43,6 +43,12 @@ main .grid > * {
         <p>- or enter this key manually -</p>
         <b><%= key %></b>
 
+        <form action="/myaccount/authenticators" method="post">
+          <input type="text" name="code" placeholder="OTP">
+          <input type="hidden" name="secret" value="<%- key %>">
+          <button type="submit" class="contrast">Confirm</button>
+        </form>
+
       </div>
     </main>
 

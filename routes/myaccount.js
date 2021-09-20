@@ -3,6 +3,7 @@ var ensureLoggedIn = require('connect-ensure-login').ensureLoggedIn;
 var crypto = require('crypto');
 var base32 = require('thirty-two');
 var qrcode = require('qrcode');
+var totp = require('notp').totp;
 var db = require('../db');
 
 var router = express.Router();
@@ -71,6 +72,34 @@ router.get('/authenticators/new',
   },
   function(req, res, next) {
     res.render('myaccount/authenticators/new', { user: req.user });
+  });
+
+router.post('/authenticators',
+  ensureLoggedIn(),
+  function(req, res, next) {
+    console.log('NEW AUTHENTICATOR!');
+    console.log(req.body);
+    
+    var secret = base32.decode(req.body.secret);
+    console.log(secret);
+    
+    var ok = totp.verify(req.body.code, secret);
+    console.log('OK: ' + ok);
+    // TODO: fail if not ok
+    
+    
+    db.run('INSERT INTO otp_credentials (secret, user_id) VALUES (?, ?)', [
+      secret,
+      req.user.id
+    ], function(err) {
+      console.log(err);
+      
+      if (err) { return next(err); }
+      return next();
+    });
+  },
+  function(req, res, next) {
+    res.redirect('/myaccount/authenticators');
   });
 
 module.exports = router;
