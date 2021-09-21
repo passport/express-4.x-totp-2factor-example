@@ -31,6 +31,7 @@
     "notp": "^2.0.3",
     "passport": "^0.4.0",
     "passport-local": "^1.0.0",
+    "passport-totp": "0.0.2",
     "qrcode": "^1.4.4",
     "sqlite3": "^5.0.2",
     "thirty-two": "^1.0.2"

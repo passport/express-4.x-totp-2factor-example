@@ -1,5 +1,6 @@
 var passport = require('passport');
 var Strategy = require('passport-local');
+var TotpStrategy = require('passport-totp').Strategy
 var crypto = require('crypto');
 var db = require('../db');
 
@@ -30,6 +31,14 @@ module.exports = function() {
         };
         return cb(null, user);
       });
+    });
+  }));
+  
+  passport.use(new TotpStrategy(function(user, cb) {
+    db.get('SELECT rowid AS id, * FROM otp_credentials WHERE user_id = ?', [ user.id ], function(err, row) {
+      if (err) { return cb(err); }
+      if (!row) { return cb(null, false); }
+      return cb(null, row.secret, 30);
     });
   }));
 
